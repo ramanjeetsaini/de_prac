@@ -1,0 +1,4 @@
+How is azure deveops integrated with AWS for deployment?
+How we used Amazon Kinesis?
+overview of DIP and DSP plus ubereats, promotions and M&S service overview
+Any analytics service built?

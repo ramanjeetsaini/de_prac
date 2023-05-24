@@ -1,0 +1,20 @@
+Data extraction from postgresql DB
+    - tables in postgresql
+    use spark to read data
+        - import pyspark
+        - start spark session (distributing and scaling app across executors)
+        - configuration parameters
+        - download jdbc driver to extract fromm postgresql
+        - use sessoin to read file spark.read()
+        - stores in dataframe
+
+    transforming the dataframe
+        - use groupby function, mean function
+        - created transformed dataframe
+    
+    Loading Data
+        - mode, url, properties 
+        - df.write.jdbc(properties) #that's how we write back to tables
+
+
+
