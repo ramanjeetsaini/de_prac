@@ -1,4 +1,9 @@
 Data Platform
 Ingestion
     - landing -> clean-> businessusecase
-    - maintained through pipelines
+    - maintained through pipelines (ETL)
+
+Singer Ingestion
+    - is a specification (JSON format)
+    - Extract (TAPs) and Loading Data (Targets)
+    
