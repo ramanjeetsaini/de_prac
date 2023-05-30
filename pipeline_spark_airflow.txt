@@ -1,5 +1,7 @@
 Data extraction from postgresql DB
     - tables in postgresql
+    - \dt (show tables)
+
     use spark to read data
         - import pyspark
         - start spark session (distributing and scaling app across executors)

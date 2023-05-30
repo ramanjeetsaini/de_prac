@@ -6,4 +6,15 @@ Ingestion
 Singer Ingestion
     - is a specification (JSON format)
     - Extract (TAPs) and Loading Data (Targets)
+    - Communication over Streams (names virtual location to which you send messaged that can be picked at downstream)
+    - schema (metadata), state(process metadata), record(data)
+
+spark
+    - Spark SQL, Spark streaming, MLlib, GraphX
+    - data at scale processing
+    - interactive analytics
+    - overheads for little data
+    - by default dtype is streaming
+    - enforce a schema using StructType
+
     
