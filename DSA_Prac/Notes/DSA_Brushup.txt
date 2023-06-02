@@ -1,0 +1,4 @@
+Stack 
+    -Push
+    -Pop
+    -Peek (returns top element)
