@@ -1,0 +1,34 @@
+DB properties
+    - Universe of Discourse
+    -logically coherent collection of data
+    - data for specific purpise
+
+characterstics of DB approach
+    - self-describing nature of Database systems
+    - program-data independence
+    - support for mulitple views
+    - shareing data & multiuser systems
+    - concurrency control strategy
+
+Benefits 
+- data normalization
+- data shareing
+- data integrity
+- data uniqueness
+
+Types of data Models
+    - conceptual data Model
+        - Entity-relationship Model
+    - Logical Models
+        - Hierarichal Model
+            - Single parent , multiple child
+        - Network Model
+            - mulitple parent, multiple child
+        - relational Model
+            - tables or relationship
+    - Physical Data Models
+        - orderness in memory
+        - data storage in comp memory
+        - realtion between tbales in DB
+
+
