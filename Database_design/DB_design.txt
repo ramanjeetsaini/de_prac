@@ -31,4 +31,133 @@ Types of data Models
         - data storage in comp memory
         - realtion between tbales in DB
 
+Database Schema
+- schema diagram to display schema of DB
+- tables, columns, datatype, functions, other objects
+- displayes only certain aspects ( record, data)
+- changing the schema means schema evolution
 
+Database instance
+- the information collected in DB at specific point of time
+- known as database state (snapshot of current state)
+
+Three-schema architecture
+- Endusers - conceptual level - internal levl - stored Database
+- external schema
+    - part of DB (hides unrelated details)
+    - does not show retrieving or storing of data
+    - different external view for users (just a content of DB)
+
+- conceptual schema
+    - describes database structure
+    - hides about physical storage 
+    - focuses on data type, entitiy, relationships 
+    - record-based logical data model 
+
+- internal schema
+    - sotrage on physical storage devices
+    - physical data Model
+    - complete details fo data storage and access paths for DB
+
+Data independence
+
+- Logical Data independence
+    - ability oto change the conceptual schema wihtout external schema/user view
+    - removal of entitiies from conceptual schema would not change external schema (external view)
+
+- Physical data independence
+    - provide a logical description of DB without need to specify physical structues
+    - change in internal schema because of reorganize of physical files would not affect conceptual schema
+    - external schema does not change as well
+
+- easier ot achieve physical data independence
+    - location of disk and type of storage device is hidden anyways
+- tough to achiece logical independence 
+    - accomodate changes in strucuture of DB without affecting API ( stricter requirement)
+
+
+Classification of DBMS 
+-  Based on data model
+    - Hierarichal & netowrk used by mainframe platforms (tradiational models)
+    - object-oriented models
+        - informaiton represented in form of object-oriented programming
+        - OODBMS combines database with OOP capabilities 
+        - O2, ObjectStore, Jasmine
+- based on number of users
+    - single user database systems
+        - one user at a time
+    - multiuser DB systems 
+        - support multi user concurrently
+- based on DB distribution
+    - centralized systems
+        - DBMD and database stored in central location
+    - distirbuted DBMS
+        - distirbuted across various sites
+    - homogenous distirbuted DBMS
+        - same software for all sites 
+    - heterogenous distributed DBMS
+        - different software but common data format (like MARC)
+
+Entity-relationship model
+    - Entity
+        - entity type
+        - entity set 
+    - attributes
+        - single attributes
+            - no further breakdown
+        - composite attribute
+            - can breakdown to further attributed (Eg addres - street, housno, subrb)
+        - multivalued 
+            - single entity can have mulitple valus of same attribute (eg. multiple college degrees)
+        - derived
+            - containes values calculated from other attributes
+            - Eg. Age derived from Bdate , Bdate is stored attribute and Age is derived attribute
+        
+    Key Attributes of entity type
+    - Key attribute 
+        - one more attributed with distinc for each entity
+        - primary key and composite key
+    
+    - relationships
+        - relationship type & set
+
+Degrees of relationship Types
+    - Unary (recursive)
+        - involves only one entitiy type 
+        - same entity participates in relationship type in different roles. 
+        - eg. Employee entity set participates in Supervisoin - as supervisor and in supervisee
+    
+    - binary 
+        - involves 2 entities 
+        - Employee works_on Projects (employee and projects are entities & works_on realtionship)
+        - constraints
+            - mapping cardinality
+                - one to one
+                    - entity in set A is associated with at most one entity in set B and vice versa
+                    - Eg. Employee manages department
+                - one to many 
+                    - entity in set A is associated with several entities in B, entity in set B associated with at most one entity in set A 
+                    - eg. many employees working in department but each employe works in only one department
+                - many to many 
+                    - entity set A associated wit hseveral entities in set B and vice versa
+                    - cardinality ratio M: N (M is set A size and N is set B size )
+                    - eg. employee works on projects
+            - participation
+                - specify whether the existance of entity depends on it being realted to another entity via relationship type
+                - total participation  
+                    - each entity in that set must participate in at least on relationship instance.
+                    - also known as mandatory participation
+                    - represented using double line 
+                    - eg. projects worked by employee (each project should be realted to atleast one employee otherwise project does not exist)
+                
+                - partial participation
+                    - also known as optional participation
+                    - may or maynot participate
+                    - represented using single line 
+
+
+
+    - ternary
+        - three enttity type linked together
+
+    
