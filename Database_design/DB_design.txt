@@ -160,4 +160,108 @@ Degrees of relationship Types
     - ternary
         - three enttity type linked together
 
+Strong entity type 
+    - entitity with key attribute
+weak entity Types
+    - indetifyin or owner entity type
+    - relation to specific entity in combination with one of their attribute values
+    - eg. dependents of employees, Single employee cannot have same name dependents. However, distinct employess can have same name dependents
+    - Name of the dependents would act as partial key for the specific employee
+    - weak entity type always has total participation 
+        
+
+Relational DATA model
+- attribute 
+    - each columns
+- tuple
+    - each row of tables
+- relation Schema
+    - represents name of the relation 
+    - eg. Student( roll_no, Name, addr) is schema for Student relation
+- degree 
+    - number of attributes 
+- cardinality
+    - number of tuples or rows 
+- relation instance
+    - set of tuples at certain point
+    - can change when insert update delete
+- NULL values 
+    - not known or unavailable
+- Domain
+    - set of atomic values ( each value in domain is indivisible)
+    - set of acceptable values that a coolumn is allowed to contain 
+    - eg. Name can only be string, age can only between 17-27
+
+Keys
+-Super Key
+    - set of attributes within a table 
+    - eg. Student_id, (Student_id,Name), Phone. these can be identified as key 
+- Candidate key 
+    - minimal set of fields 
+    - can be more than one cadidate key
+    - it can be NULL or emplty so super key cannot be candidate key
+
+- Primary Key
+    - One can be chosen from candidate key
+
+- composite key 
+    - two or more attributes together form key but are not key independently or individually
+- alternate key 
+    - key other than primary key out of candidate Keys
+
+- foreign key 
+    - cross reference of primary key in different relation
+    - can be null
+    - need not follow uniqueness
+
+Relational integrity constraints
+    - constraints that must be present for valid relation
+    - Domain constraints
+        - in each tuple, value of each attribute must appear in corresponding domain
+        - similar data type in short
+    - entity integrity 
+        - primary key should not be null
+        - should follow uniqueness property
+
+    - referential integrity 
+        - 1. we cannot insert a record into a referenceing relation if corresponding record does not exist in referenced relation
+        - 2. we cannot delete/update record of referenced relation if corresponding record exists in referencing relation 
+    
+Functional Dependency 
+    - The key attribute should determine the dependency of other attribute on itself 
+    - Determinant (key attribute) , dependent (normally non-key attributes) 
+
+Armstrong's Axioms (rules for functtional dependency)
+- inference rules to infer all function dependencies 
+    - axiom of reflexivity
+        - if Y is subset of X, X determines Y
+        - if Y C X, then X -> Y
+    - axion of augmentation
+        - partial dependency
+        - every non-key attribute must be fully dependent on whole composite primary key
+        - If X determines Y, then XZ should determine YZ
+        - if X -> Y, then, XZ -> YZ
+    - axion of transivity
+        - transitive dependency 
+        - If X determines Y and Y -> Z, then X -> Z
+
+
+NORMALIZATION 
+- First Normal form (1-NF)
+    - domain of an attribute must include only atomic values. 
+    - must be a single values from the domain of that attribute
+    - multi-valued attribute will violate 1-NF 
+- Second normal form (2-NF)
+    - must be in first normal form
+    - no partial dependency
+    - no non-prime attributes is dependent on any proper subset of composit primary key of the table 
+    - tries to reduce redundant data being stored in memory
+
+- Third normal form (3NF)
+    - it should be in second normal form
+    - it should not have transitive dependency 
+
+- Boyce-Codd normal form (BCNF)
+    - it should be in third normal form 
+    - for any dependency A -> B, it should be a super key 
     
