@@ -1,0 +1,77 @@
+Mysql 
+    - client server architecture
+    - three layers
+        - Application/client layers
+            - responsible for client connections, authorization, authentication, and security.
+
+        - MySQL server layers (relational enginer)
+            - responsible for parsing, analyzing, and optimizing submitted queries.
+            - maintains caches and buffers
+            - provides built-in recovery and backup partitioning
+            - SQL interface for interacting with database
+            - fed query execution plan to storage engine
+        - Storage Engine layers
+            - part of DBMS that write and retrieves data from physical storage
+
+Mysql Facts
+    -  /*!40100 DEFAULT CHARACTER SET latin1
+        - the numeral 40100 indicated the minimum version of mysql needed to sun SHOW CREATE DATABASE 
+    - CREATE DATABASE ;
+        - db.opt file is created that holds database options
+        - find . -name db.opt
+        - use IF NOT EXISTS 
+        - physical directory is created
+        - case sensitive on linux and mac (Movie != movie) 
+    - Collation & Character sets 
+        - by default Mysql uses latin-1 -> associated collation (latin1_swedish_ci)
+        - CI implies case insensitive
+        - accented character stored using swedish conventions
+    - inspect collation in the local machine
+        - SHOW VARIABLES LIKE "c%";
+    
+    - ORDER by
+        - column name is sort key
+        - sort key is case insensitive and s=ascending by default
+        - sorting depends upon character set being used and collation orderness
+        - use BINARY for ASCII comparision (uppercase appear before lowercase)
+    - LIMIT
+        - limit <rows to display> offseet <rows to leave from top>
+        - limit <offset>, <number of rows to display>
+    - TRUNCATE
+        - does not work with locking or transactions
+        - acts as DELELTE when used with InnoDB.
+    - UPDATE
+        - has 2 parts (Matching, Modifications)
+            - rows are determined 
+            - changes are applied 
+    - Cardinality is counted based on statistics stored as integers, so the value is not necessarily exact even for small tables.
+
+    - INDEX 
+        - clustered index 
+            - B-tree structure (R-tree in case of spacial index)
+            - physical arrangement mimics logical order 
+            - way to inform DB system to cluster values physically close in index order
+            - B-tree index remains in main memory
+            - searching becomes easy as it guarantees fixed number of disk reads since they are balanced
+            - in B+ tree the data only lives in leaf nodes
+            - root and internal containes only key in which b+ tree is sorted
+            - stores rows in entity called PAGE (smallest unit of data a DB can write or read from disk)
+            - page containes rows and forms leaf node of b+ tree
+            - pages form leaf nodes of tree
+            - B+ tree
+                - nodes are linked via back & next pointer
+                - usefule in range queries (seek key-value and blindly follow forward pointer until the end of index)
+            - DB works with pages
+            - page is read into memory, all rows are loaded (16KB default size but configurable)
+            - Collection of pages -> extent
+            - collection of extent -> segment
+            - collection of segment -> tablespace
+            - system tablespace
+                - collection of tables and assoc indexes
+                - user tables are also included (older version)
+                - separate tablespace for each user table (newer version)
+
+
+
+    
+    
