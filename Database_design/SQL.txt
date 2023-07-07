@@ -70,7 +70,35 @@ Mysql Facts
                 - collection of tables and assoc indexes
                 - user tables are also included (older version)
                 - separate tablespace for each user table (newer version)
+            - storage of rows in page
+                - pages of b-tree split and merge
+                - page is full, new key is inserted and existing page splits
+                - if rows are deleted, pages get merged
+                - records/rows exists as singly linked list
+                - new row is placed witihin the free space and linked list pointers are manipulated
 
+            - storage on disk
+                - clusteres index does not imply data rows are contiguosly stored
+                - location on disk where row is written is realm of ObjectStore
+                - Clus. index ensures physical and logical order appear same 
+
+            - table Facts
+                - with InnoDB in mysql, all tables are stores as clus. index with primary key as sort key
+            - DB engine is Software module that DBMS uses to create, read, update, delete 
+            - for mysql, InnoDB and MyISAM are famous
+            - SHOW ENGINES; (Shows current DB engines)
+
+            - Indexing rules
+                - Mysql creates clus index on primary key
+                - if no PK, look for UNIQUE index with columns set as NOT NULL
+                - if no UNIQUE index, generates hidden index GEN_CLUST_INDEX on synthetic columns with rowID values
+                - ONE clustered index per table , all other index will be secondary
+        
+        - Non-clustered Index 
+            - leaf nodes does not hold actual data, stores pointer to that data
+            - if DB engine is MyISAM, then rows are not stored in sorted order but appear as heap
+            - Heap table (unordered pile of data)
+            - ISAM (indexed Sequential Access Method) retrieve information from large datasets
 
 
     
