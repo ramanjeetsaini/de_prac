@@ -99,7 +99,36 @@ Mysql Facts
             - if DB engine is MyISAM, then rows are not stored in sorted order but appear as heap
             - Heap table (unordered pile of data)
             - ISAM (indexed Sequential Access Method) retrieve information from large datasets
+            - rows appear in insertion order 
+            - All indexed are sceondary, primary index is unique non-clus index named primary
+            - how to avoid cost of rewriting
+                - secondary index's leaf nodes primary key values are stored in leaf node rather than pointer to rows
+                - seek secondary index, get the primary, use primary key to navigate the primary index to locate the row.
+                - 
 
 
     
+    - ALTER
+        - ALTER TABLE table CHANGE oldColumnName newColumnName <datatype> <restrictions>;
+        - use CHANGE if you want change column name (if just column rename, still need to specify type of column)
+        - use MODIFY if altering type/clauses ofr column (requires to specify same column name twice with CHANGE)
+        - nonsensical change will throw error
+        - use ADD <column_name> for adding new columns 
+        - use DROP <column_name> for dropping column
+        - use FIRST or AFTER with ADD for positioning the columns addition
+        - dropping columns remvoes index as well
+        - for some alter opns, MYSQL creates new table, copies data from old table, deletes the old table and renames the new one
+        - alteration is expensive when table is rebuilt
     
+    - DISTINCT
+        - post processing filter, applied on resultign rows
+        - applies to all the selected columns in output rows
+    - Can use MIN & MAX with literals
+
+    - GROUP BY 
+        - cannot have non-aggregated columns in SELECT, ORDERBY, HAVING
+        - setting ensured by sql_mode set to only_full_group_by
+    
+    - USING with JOINS
+        - defines one or more columns that are in both tables
+        - if rows dont match, they are not included 

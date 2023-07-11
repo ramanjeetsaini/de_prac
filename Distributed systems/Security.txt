@@ -1,0 +1,2 @@
+Damage = costo of remediation * customer compensation * regulatory fines * lost reputation
+security must be baked in
