@@ -131,4 +131,412 @@ Mysql Facts
     
     - USING with JOINS
         - defines one or more columns that are in both tables
-        - if rows dont match, they are not included 
+        - if rows dont match, they are not included
+
+    - UNION
+        - The alias from the second query is ignored
+        - we wrap the two queries in parentheses which is a requirement when using the order by or limit clause in subqueries of a union query.
+        - two result sets being combined should have the same number and order of column
+        - columns from the result sets should be of the same type or types that are compatible
+        - union clause doesn’t output duplicate values
+        - If we want duplicate values to be included in the query result, we need to use the UNION ALL
+        - may ignore the ORDER BY clause when used without the LIMIT clause in a subquery
+        - MySQL converts the int to varchar
+    
+    - NATURAL JOINS
+        - attempts to find the natural join between participating tables by matching on columns with same name.
+        - Under the hood, a natural join query is translated into an inner join query with matching column names ending up inside the using clause.
+        - avoid using the natural join as it hides the columns that’ll be used for the join and can subtly introduce bugs
+        - Imagine a situation where a table is altered to have an additional column that has the same name as a column in another table which is naturally joined with the first table in an existing query
+
+    - Nested queries are generally slower but more readable and expressive than equivalent join queries
+    - When a subquery returns a single value, it is said to return a scalar operand.
+    - Nested column queries
+        - use ANY ('','') , can be used for ENUM data type 
+        - ANY and it's alias IN matches at least on value from GROUP
+        - ALL must match all the values in group   
+        - BINARY operator to make the comparison case-insensitive
+        - not required if the collation is already set to be case-insensitive for the database.
+    - correlated query
+        - It is legal to access a table or any of its columns referenced in the outer query inside a sub-query.
+        - provided as a scalar value to the inner query
+    
+    - MULTI-table delete 
+        - DELETE Actors, DigitalAssets   -- Mention tables to delete rows from
+            FROM Actors   -- The inner join creates a derived table 
+           -- with matching rows from both tables    
+            INNER JOIN DigitalAssets
+            ON Actors.Id = DigitalAssets.ActorId
+            WHERE AssetType = "Twitter";
+        - we can’t delete from a table that’s read from in a nested subquery
+        - ORDER BY and LIMIT clauses can’t be used with multi-table deletes.
+
+    - MULTI TABLE UPDATE
+        - UPDATE T1, T2
+            SET col1 = newVal1, col2 = newVal2
+            WHERE <condition1>
+        - UPDATE 
+            Actors INNER JOIN DigitalAssets 
+            ON Id = ActorId 
+            SET FirstName = UPPER(FirstName), SecondName = UPPER(SecondName), URL = UPPER(URL) 
+            WHERE AssetType = "Facebook";
+        - we can’t update a table that is also being read from in a subquery.
+        - ORDER BY and LIMIT clauses can’t be used with multi table deletes.
+    
+    - Inserting using Select
+        - inserting in existing table
+            - INSERT INTO table1 (col1, col2)
+                SELECT col3, col4
+                FROM table2;
+        
+        - insert into new table
+            - CREATE TABLE newTable (col1 <datatype>, <col2>)
+                SELECT col3, col4
+                FROM table2;
+        - trying to add a duplicate rows result in an error. MySQL provides a way to bypass this error and continue execution using the IGNORE clause.
+        
+        CREATE TABLE MyTempTable SELECT * FROM Actors;
+        - creating and copying data as above will not create foreign or primary key constraints on the copy table.
+
+        CREATE TABLE CopyOfActors LIKE Actors;
+        -We can also create a copy of an existing table without the data using the LIKE operator
+        - The primary keys and any indexes defined on the source table are also defined on the copy table.
+
+        - REPLACE
+            - REPLACE deletes the row and then adds the new row thereby maintaining the primary key constraint at all times
+            - REPLACE can be useful in automated scripts where it is not known ahead of time if a particular table already contains a particular primary key
+            - If it doesn’t, the replacement behaves like an insertion, otherwise, it deletes and writes in the new row with the same primary key.
+            - If a table doesn’t have a primary key defined, REPLACE behaves exactly like an INSERT. Without a primary key REPLACE can’t uniquely identify a row to replace.
+            - when inserting the duplicate row using the INSERT IGNORE clause, the duplicate row is ignored and not added to the table whereas when using REPLACE the existing row is deleted and the duplicate row is added to the table.
+            - we can’t replace into a table that is also being read from a subquery.
+
+    - VIEWS
+        - view containing columns from multiple tables can simplify queries by changing a multi-table query to a single-table query against a view
+        - Views are stored in the database along with tables.
+        - A view can be created from a single table, by joining two tables, or from another view.
+        - syntax
+            - CREATE [OR REPLACE] VIEW view_name AS
+                SELECT col1, col2, …coln
+                FROM table
+                WHERE < condition>
+        - A view can be queried in the same manner as a table
+        - Views are stored as virtual tables and also appear in the list of tables when SHOW TABLES is executed.
+    - To find out which entities in the above image are tables and which are views, the SHOW FULL TABLES command is used
+    - We can use the [OR REPLACE] clause to make changes to a view that we just created.
+        - We can explicitly define columns in a view by listing them in parentheses after the view name.
+    - UPDATABLE views
+        - It is possible to insert or update rows in the base table, and in the same vein, delete rows from the table using an updatable view.         
+        - In order for a view to become updatable, it must abide by certain conditions.
+            - the resulting view will not be updatable if the SELECT query that creates view has following:
+                - aggregare functions (MAX,MIN,COUNT,SUM)
+                - DISTINCT 
+                - LEFT JOIN
+                - GROUP BY
+                - HAVING
+                - UNION 
+            - a subquery that refers to the same table that appears in the FROM clause prohibits updates to the base table.
+
+        - syntax
+            UPDATE view
+            SET col1 = value1, col2 = value2,…coln = valuen
+            WHERE <condition>
+
+        - To find out which views in the database are updatable we can query the views table in the information_schema database.
+            - SELECT Table_name, is_updatable
+                FROM information_schema.views
+                WHERE table_schema = 'MovieIndustry';
+        
+        - WITH CHECK OPTION 
+            - Views usually contain a subset of rows from a base table. It is possible to insert or update rows which are not visible through the view.
+            - WITH CHECK OPTION clause is used at the time of creation of the view and is used to maintain consistency when updating a table through an updatable view.
+            - forbids the user to insert or update rows that are not visible through the view.
+            - syntax
+                CREATE [OR REPLACE] VIEW view_name AS
+                select_statement
+                WITH CHECK OPTION;
+            - view without WITH CHECK OPTION
+                - try to insert record into the view, even though it is not eligible to be in view, it will still inserted into the main table which is not consistent
+            
+            - view with WITH CHECK OPTION
+                - if we try to insert record which is not eligible to be inserted into the view, it will not be inserted into main table as well
+
+            - By default it's a CASCADED CHECK option
+                - CASCASED CHECK option
+                    - checks the underlying views as well before inserting record into the table through view
+                - LOCAL Check option
+                    - Checks only the specified view on which check option was applied
+        - 2 ways to list all views in DB
+            - SHOW FULL TABLES 
+            - query information_schema DB
+                    SELECT table_name
+                    FROM information_schema.TABLES
+                    WHERE table_type = 'VIEW'
+                    AND table_schema = 'MovieIndustry';
+        - DROP VIEW can be used to delete a view
+        - view can be renamed in 2 wyas - 
+            - RENAME TABLE
+            - delete and recreate
+        - syntax 
+            - SHOW FULL TABLES
+                {FROM | IN} db_name
+                WHERE table_type = ‘VIEW’
+                LIKE pattern;
+            - DROP VIEW [IF EXISTS] view1, view2,…viewn;
+            - RENAME TABLE old_name
+                TO new_name;
+        - FROM | IN clause is optional and can be used to see the views from another database.
+        - RENAME TABLE command can be used for renaming views.
+        - RENAME clause. First, copy the query used to create the view, then drop the view, and lastly create a new one from the DDL copied in the first step. The SHOW CREATE VIEW query is used to show the DDL of the view.
+
+    - STORED PROCEDURES
+        - invoked using CALL 
+        - mySQL complies the code and stores it in cache
+        - advantanges
+            - instead of sending queries, only name of SP is sent 
+            - reduces duplication 
+            - performance gain as code can be pre-compiled 
+        - disadvantages
+            - difficult to debug 
+            - resource overhead , overuse of CPU and memory 
+            - no way to rollback 
+        - syntax 
+            DELIMITER **
+            CREATE PROCEDURE procedure_name( parameter_list )
+            BEGIN
+            procedure_body
+            END**
+            DELIMITER ;
+
+            deleting procedure needs ALTER ROUTINE privilege
+            DROP PROCEDURE [IF EXISTS] procedure_name;
+        
+        - set delimiter using DELIMITER , so we can pass whole stored procedure in single statement 
+        - SHOW PROCEDURE STATUS - to view SP in DB 
+        - using information_schema
+            - SELECT routine_name
+                FROM information_schema.routines
+                WHERE routine_type = 'PROCEDURE'
+                AND routine_schema = 'sys';
+        - To make changes to a stored procedure, the only way is to delete the procedure and then re-create it.
+
+        - setting variables 
+            - DECLARE
+                - DECLARE VarName DataType (VarLength) [DEFAULT DefaultValue];
+            - SET 
+                - SET VarName = value;
+            - SELECT INTO 
+                - SELECT ColName
+                    INTO VarName
+                    FROM TableName;
+        - parameters 
+            - IN 
+                - app calling SP ha to pass argument 
+                - SP can not alter the vlaue 
+                - works on copy of IN, original value remains intact 
+            - OUT
+                - SP will pass argument back to caller 
+                - it's value can change 
+                - cannot access initial value, NULL in the start of exec 
+            - INOUT 
+                - mix of IN and OUT 
+            
+            - use session variable i.e. @ before variable with OUT 
+            - EXAMPLE
+                - DELIMITER **
+
+                    CREATE PROCEDURE GenderCountByNetWroth(
+                    IN NetWorth INT,
+                    OUT MaleCount INT,
+                    OUT FemaleCount INT)
+                    BEGIN
+                        SELECT COUNT(*) INTO MaleCount
+                        FROM Actors
+                        WHERE NetWorthInMillions >= NetWorth
+                            AND Gender = 'Male';
+
+                    SELECT COUNT(*) INTO FemaleCount
+                        FROM Actors
+                        WHERE NetWorthInMillions >= NetWorth
+                            AND Gender = 'Female';
+
+                    END**
+                    DELIMITER ;
+
+                    CALL GenderCountByNetWroth(500, @Male, 
+                    @Female);
+
+                    SELECT @Male, @Female;
+
+        - CONDITIONS 
+            - MYSQL supports IF and CASE 
+            - evaluates to TRUE, FALSE or NULL
+            - syntax 
+                IF Condition THEN
+                If_statements;
+                END IF;
+
+                IF Condition THEN
+                If_statements;
+                ELSE
+                else_statements;
+                END IF;
+
+                IF Condition THEN
+                If_statements;
+                ELSEIF else-if_condition
+                else-if_statements;
+                …
+                ELSE
+                else_statements;
+                END IF;
+            - CASE statements syntax 
+                *simpple case statemen*
+                CASE case_value
+                WHEN case_value1 THEN statements
+                WHEN case_value2 THEN statements
+                …
+                [ELSE else-statements]
+                END CASE;
+
+                *searched CASE statement*
+                 CASE
+                    WHEN age < 20 THEN 
+                        SET AgeRange = 'Less than 20 years';
+                    WHEN age >= 20 AND age < 30 THEN
+                        SET AgeRange = '20+';
+                    WHEN age >= 30 AND age < 40 THEN
+                        SET AgeRange = '30+';
+                    WHEN age >= 40 AND age < 50 THEN
+                        SET AgeRange = '40+';
+                    WHEN age >= 50 AND age < 60 THEN
+                        SET AgeRange = '50+';
+                    WHEN age >= 60 THEN
+                        SET AgeRange = '60+';
+                    ELSE
+                        SET AgeRange = 'Age not found';
+                END CASE;  
+            - When using CASE, explicit error handling is needed for NULL values because failure to match a condition will result in an error
+
+            - ITERATIVE statements
+                - DELIMITER **
+                    CREATE PROCEDURE PrintMaleActors(
+                        OUT str  VARCHAR(255))
+                    BEGIN
+
+                    DECLARE TotalRows INT DEFAULT 0;
+                    DECLARE CurrentRow INT;
+                    DECLARE fname VARCHAR (25);
+                    DECLARE lname VARCHAR (25);
+                    DECLARE gen VARCHAR (10);
+
+                    SET CurrentRow = 1;
+                    SET str =  '';
+
+                    SELECT COUNT(*) INTO TotalRows 
+                    FROM Actors;
+
+                    Print_loop: LOOP
+                    IF CurrentRow > TotalRows THEN
+                    LEAVE Print_loop;
+                    END IF;
+
+                    SELECT Gender INTO gen 
+                    FROM Actors 
+                    WHERE Id = CurrentRow;
+
+                    IF gen NOT LIKE 'Male' THEN
+                    SET CurrentRow = CurrentRow + 1;
+                    ITERATE Print_loop;
+                    ELSE
+                    SELECT FirstName INTO fname 
+                    FROM Actors 
+                    WHERE Id = CurrentRow;
+
+                    SELECT SecondName INTO lname 
+                    FROM Actors 
+                    WHERE Id = CurrentRow;
+
+                    SET  str = CONCAT(str,fname,' ',lname,', ');
+                    SET CurrentRow = CurrentRow + 1;
+                    END IF;
+                    END LOOP Print_loop;
+
+                    End **
+
+                    DELIMITER ; 
+            
+        - CURSORS
+            - read only , means only to view
+            -  only Sequential manner 
+            - asensitive , point to actual data in table 
+            - insensitive cursors create temporary table (not supported by MYSQL)
+            - changes in data with other connection can affect insensitive curosr 
+            - syntax 
+                - DECLARE CursorName CURSOR FOR
+                    SELECTStatement;
+                    DECLARE CONTINUE HANDLER FOR NOT FOUND
+                    SET LastRowFetched = 1;
+                    OPEN cursor_name;
+                    FETCH cursor_name INTO variables list;
+                    CLOSE cursor_name;
+
+    - ERROR HANDLING    
+        - 3 PARTS - ERROR condition, action, statements 
+        - error conditon can be 
+            - MYSQL error code
+            - SQLSTATE value 
+            - user defined named condition ass with error code or SQLSTATE 
+            - action can be CONTINUE OR EXIT 
+            - syntax 
+                - DECLARE CONTINUE | EXIT HANDLER FOR
+                    MySQL error code| SQLSTATE code| condition_name
+                    statements;
+                - DECLARE condition_name CONDITION FOR condition_value;
+
+            - common errors 
+                - SQLException
+                - 1062 (duplicate key error)
+                    - if we put the "Select "Dulplicate key error"" in BEGIN END block, it will continue execution
+                - 1322 (wrong cursor statement) 
+                - 1304 (procedure name already exists) SQLSTATE 42000 
+    
+    - SIGNAL 
+        - returning error to handler 
+        - handle unexpected events 
+        - SQLSTATE value followed by named condition 
+        - SQLSTATE 45000 is generic way to catch un-hanled user defined exceptions
+        - syntax 
+            SIGNAL SQLSTATE | COndition_name 
+            SET condition_information_item1 = val1, condition_inofrmation_item2 = val2...;
+        
+        - RESIGNAL is similar to SIGNAL 
+            -SQLSTATE and SET clause are optional in this 
+            - can be used only within scope of condition handler 
+        - SIGNAL can be used anywheere in stored procedure 
+
+- STORED FUNCTIONS 
+    - can only return one value 
+    - query using stored function slows down speed of query 
+    - can not call using CALL keyword 
+    - parsed and compiled in runtime
+    - return value a must in stored function, not needed in sotred procedure 
+    - only supports IN parameter 
+    - error handling not possible 
+    - can DETERMINISTIC (same) or NOT DETERMINISTIC (different) for same input parameter
+    - must have atleast one return statement
+    - SYNTAX 
+        - Function definition
+        DELIMITER **
+        CREATE FUNCTION function_name(parameter_list)
+        RETURNS datatype
+        [NOT] DETERMINISTIC
+        BEGIN
+        function body
+        END **
+        DELIMITER ;
+
+        - Show all function 
+        SHOW FUNCTION STATUS [LIKE 'pattern'] | [WHERE condition];
+
+        - Deleting a function 
+        DROP FUNCTION [IF EXISTS] function_name
