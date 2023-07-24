@@ -540,3 +540,86 @@ Mysql Facts
 
         - Deleting a function 
         DROP FUNCTION [IF EXISTS] function_name
+    - ROUTINES table contains information for all functoins 
+
+- TRIGGER
+    - executed automatically in response to event 
+    - associated with tables 
+    - invoked in response to events tha change contents of table like INSERT, UPDATE, DELETE 
+    - can be invoked before /after event 
+    - 2 types of triggers 
+        - row-level trigger 
+            - when row is inserted, updated or deleted 
+            - 
+        - statement-level trigger 
+    - Syntax 
+        - create trigger
+        CREATE TRIGGER trigger_name trigger_time trigger_event
+        ON table_name
+        FOR EACH ROW
+        trigger_body
+
+        - drop trigger 
+        DROP TRIGGER [IF EXISTS] [database_name.]trigger_name;
+
+        - INSERT Triggers 
+            - BEFORE insert can be used for data validation / maintaining summary 
+            - AFTER insert used for maintaining activity log or copy values to another table 
+            - can access only NEW values 
+        - UPDATE Triggers 
+            - can access both NEW and OLD values
+            - if runs BEFORE, only NEW values can be updated 
+            - if runs AFTER, no NEW or OLD can be updated 
+            - BEFORE update
+                - validata data     
+                - make necessary corrections 
+                - notify users before an update 
+            - AFTER update 
+                - maintain change log 
+                - update summary table 
+            - syntax 
+            CREATE TRIGGER trigger_name [BEFORE | AFTER] UPDATE
+            ON table_name
+            FOR EACH ROW
+            trigger_body
+
+        - DELETE Triggers 
+            - only OLD value , value cannot be updated 
+            - used to archive deleted records
+            - Delete triggers are not available for views 
+            - syntax 
+            CREATE TRIGGER trigger_name [BEFORE | AFTER] DELETE
+            ON table_name
+            FOR EACH ROW
+            trigger_body 
+
+
+        - MULTIPLE Triggers 
+            - use FOLLOWS | PRECEDEDES to set the sequence of triggers 
+            - SHOW TRIGGERS (Gives details of all triggers)
+            - Information is stored in triggers tables in information_schema 
+            - SYNTAX 
+                SELECT
+                trigger_name,
+                action_order
+                FROM
+                information_schema.triggers
+                WHERE
+                trigger_schema = 'MovieIndustry';
+
+    - TRANSACTIONS 
+        - by default, it is AUTOCOMMIT in MYsql 
+        - COMMIT | ROLLBACK 
+    - LOCKING 
+        - protect tables from being modified by multiple users at the same time 
+        - MYISAM , entire table gets locked 
+        - innoDB , row-level locking happens 
+        - SHOW ENGINES; (this will show all the DB engines)
+        - by default InnoDB is used 
+        - compromise between speed and concurrency 
+        - InnoDB gives concurrency but MYiSAM gives speed
+
+    - EXPLAIN
+        - EXPLAIN is used with queries and DESCRIBE is used with structures 
+        - used for query optimization to check query plan 
+        

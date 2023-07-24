@@ -1,0 +1,44 @@
+cloud-native SaaS data warehouse and platform
+column based storage 
+star schema 
+JSON mostly used for ingest and query
+schema on read 
+data lake house (warehouse and data lake)
+
+used for 
+ad hoc reads , DW reads 
+does not support transactions 
+snowflake DB tools 
+    - web UI and console (there are 2 consoles)
+    - SnowSQL (python-based scripts and CLI)
+    - Snowpipe (Streaming ingest)
+    - Drivers and SDK (Snowpark API for AWS)
+    - Partner connection 
+
+VPC [ cloud services , query processing , Database objects]
+object hierecrchy 
+tables >> schema >> database >> account >> user role warehouse 
+SChema is the glue 
+
+Snowflake storage 
+    - blob or file storage 
+    - scalable and available 
+    - encrypted
+    - Compressed 
+    - Autopartitioned
+
+GCP Bucker - snowpipe object 
+s3 bucket - External table 
+azure blob - copy command
+
+Load process 
+    - file format 
+    - PUT command with CLI 
+    - staging table 
+
+Table types     
+    - permanent 
+    - temporary 
+    - transient (no failsafe)
+    - external (data lake ), not moved from the source 
+    
