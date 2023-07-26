@@ -1,0 +1,25 @@
+content flow 
+    - Load/Read 
+    - Select (subsetting)
+    - explore
+    - Filter/Impute
+    - calculated columns
+    - Metrics/Visualization
+
+Tips
+    - always make a snapshot of working DataFrame 
+        -reduces overhead of query whole DF & make query faster
+    - pyspark uses cache to create subset in memory / locally 
+        - further used this subset 
+    - pyspark does not read whole content 
+        - creates query plan adn metadata schema to identify column type
+    - when pyspark tries to manipulate certain part of data and finds mismatch
+        - runtime error would occue 
+        - happens mostly with distributed data 
+
+Data input/output
+    - pyspark prefers Parquet , more optimized for i/o 
+    - split data into arbitrary files for faster filtering and computation
+        - bucketing
+        - partitioning
+        - sorting 
